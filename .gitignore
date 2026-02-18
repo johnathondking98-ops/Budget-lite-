@@ -74,7 +74,10 @@ coverage/
 .next/
 out/
 
-# Package manager lock files (optional - uncomment if team uses different package managers)
+# Package manager lock files
+# NOTE: Lock files should generally be COMMITTED for consistency
+# Only ignore if you have a specific reason (e.g., library packages)
+# For applications, always commit package-lock.json or yarn.lock
 # yarn.lock
 # package-lock.json
 # pnpm-lock.yaml
