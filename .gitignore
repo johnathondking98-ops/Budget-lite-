@@ -39,3 +39,42 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage and test reports
+coverage/
+.nyc_output/
+*.lcov
+
+# Build and cache directories
+.cache/
+.parcel-cache/
+.next/
+out/
+
+# Package manager lock files (optional - uncomment if team uses different package managers)
+# yarn.lock
+# package-lock.json
+# pnpm-lock.yaml
