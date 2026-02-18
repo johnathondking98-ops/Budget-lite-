@@ -39,3 +39,45 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.project
+.classpath
+.settings/
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Logs and temporary files
+*.log
+*.tmp
+*.temp
+logs/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage and test reports
+coverage/
+.nyc_output/
+*.lcov
+
+# Build and cache directories
+.cache/
+.parcel-cache/
+.next/
+out/
+
+# Package manager lock files
+# NOTE: Lock files should generally be COMMITTED for consistency
+# Only ignore if you have a specific reason (e.g., library packages)
+# For applications, always commit package-lock.json or yarn.lock
+# yarn.lock
+# package-lock.json
+# pnpm-lock.yaml
