@@ -23,5 +23,8 @@ jobs:
     - name: Install dependencies
       run: npm ci
     
+    - name: Grant execute permission for verify-app.sh
+      run: chmod +x verify-app.sh
+    
     - name: Verify application structure
       run: ./verify-app.sh
