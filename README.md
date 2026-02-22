@@ -81,6 +81,7 @@ These configurations are automatically set in this repository:
 npm start          # Start Expo development server
 npm run android    # Run on Android device/simulator
 npm run android:device  # Run on a USB-connected Android device (USB debugging)
+npm run launch:device   # One command: detect device, forward port, and launch
 npm run ios        # Run on iOS device/simulator
 npm run web        # Run in web browser
 ```

@@ -140,7 +140,28 @@ You can launch the app directly on a physical Android device connected via USB.
   3. Open **Settings → Developer options** → enable **USB debugging**
 - Connect the device to your computer with a USB cable and accept the "Allow USB debugging?" prompt
 
-### Steps
+### One-Command Launch
+
+Once the device is connected and USB debugging is enabled, a single command handles everything:
+
+```bash
+npm run launch:device
+```
+
+This script (`launch-device.sh`) will automatically:
+1. Confirm a device is detected by ADB
+2. Forward Metro bundler port 8081 over USB (`adb reverse tcp:8081 tcp:8081`)
+3. Start Expo bound to localhost and open the app on the device
+
+> **Tip:** To target a specific device when multiple are connected:
+> ```bash
+> bash launch-device.sh <device-serial>
+> ```
+> You can find the device serial with `adb devices`.
+
+### Manual Steps (alternative)
+
+If you prefer to run each step yourself:
 
 1. Verify ADB detects your device:
    ```bash
@@ -155,17 +176,10 @@ You can launch the app directly on a physical Android device connected via USB.
    adb reverse tcp:8081 tcp:8081
    ```
 
-3. Start Expo bound to localhost (so it works through the USB tunnel):
+3. Start Expo bound to localhost:
    ```bash
    npm run android:device
    ```
-
-4. The app will install and launch automatically on the connected device via Expo Go.
-
-> **Tip:** If you have multiple devices connected, specify the target device:
-> ```bash
-> adb -s <device-serial> reverse tcp:8081 tcp:8081
-> ```
 
 ## 🔧 Available Scripts
 
@@ -174,6 +188,7 @@ You can launch the app directly on a physical Android device connected via USB.
 | `npm start` | Start Expo development server |
 | `npm run android` | Run on Android device/emulator |
 | `npm run android:device` | Run on a USB-connected Android device (USB debugging) |
+| `npm run launch:device` | **One command**: detect device, forward port, and launch |
 | `npm run ios` | Run on iOS device/simulator |
 | `npm run web` | Run in web browser |
 
