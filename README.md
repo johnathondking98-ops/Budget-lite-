@@ -6,13 +6,24 @@ A lightweight budget tracking application built with React Native and Expo.
 
 **The entire Budget-lite application can now run from this repository!** All source code, dependencies, and assets are present and verified working.
 
-**Quick Start:**
+## 🚀 Launch Preview (Quick Start)
+
+**Easiest way to preview the app:**
 ```bash
-npm install    # Install dependencies
+./launch-preview.sh
+```
+
+The script will guide you through launching the app on your device or browser.
+
+**Manual start:**
+```bash
+npm install    # Install dependencies (if not done)
 npm start      # Start development server
 ```
 
-📖 **For complete running instructions, see [RUNNING.md](RUNNING.md)**
+📖 **For complete instructions:**
+- **[PREVIEW.md](PREVIEW.md)** - Quick preview launch guide
+- **[RUNNING.md](RUNNING.md)** - Detailed running instructions
 
 ## Memory Optimization Guide
 
@@ -133,13 +144,15 @@ This project is licensed under 0BSD (Zero-Clause BSD).
 
 ## 📚 Additional Documentation
 
+- **[PREVIEW.md](PREVIEW.md)** - Quick guide to launch preview
 - **[RUNNING.md](RUNNING.md)** - Complete guide to running the application
 - **[QUICKSTART.md](QUICKSTART.md)** - Quick start for memory-constrained systems
 - **[GIT_OPTIMIZATION.md](GIT_OPTIMIZATION.md)** - Git configuration and optimization
 - **[LICENSE](LICENSE)** - License information
 
 **Quick Links:**
-- 🚀 [How to run the app](RUNNING.md) - Detailed running instructions
+- 🚀 [Launch preview](PREVIEW.md) - Quick preview launch guide
+- 📖 [How to run the app](RUNNING.md) - Detailed running instructions
 - 💾 [Memory optimization](QUICKSTART.md) - For low-memory systems
 - ⚙️ [Git tips](GIT_OPTIMIZATION.md) - Repository optimization
 - ✅ Run `./verify-app.sh` - Verify your setup is ready
