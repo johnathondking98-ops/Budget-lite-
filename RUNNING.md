@@ -133,7 +133,18 @@ You can launch the app directly on a physical Android device connected via USB.
 
 ### Prerequisites
 
-- **`adb`** is included automatically when you run `npm install` (via the `android-platform-tools` dev dependency). No manual SDK download needed.
+`adb` (Android SDK Platform Tools) is required. Choose one of these options:
+
+**Option A – automatic (recommended):** `adb` is included when you run `npm install` via the `android-platform-tools` dev dependency. Nothing extra needed.
+
+**Option B – manually downloaded zip:** If you downloaded the Platform Tools zip from Google:
+1. Extract the zip — it creates a `platform-tools/` folder
+2. Copy or move that `platform-tools/` folder into the root of this repository (next to `package.json`)
+3. `launch-device.sh` will detect it automatically
+
+**Option C – system PATH:** Install [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools) and ensure `adb` is in your system PATH.
+
+You also need:
 - USB Debugging enabled on your Android device:
   1. Open **Settings → About phone**
   2. Tap **Build number** 7 times to unlock Developer Options

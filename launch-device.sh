@@ -11,20 +11,30 @@ set -e
 
 DEVICE_SERIAL="${1:-}"
 
-# ── 1. Locate adb (system PATH or npm-installed android-platform-tools) ───────
+# ── 1. Locate adb (system PATH, npm devDep, or manually-extracted platform-tools) ─
 ADB=""
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 if command -v adb &> /dev/null; then
     ADB="adb"
-elif [ -x "$(dirname "$0")/node_modules/.bin/adb" ]; then
-    ADB="$(dirname "$0")/node_modules/.bin/adb"
+elif [ -x "$SCRIPT_DIR/node_modules/.bin/adb" ]; then
+    # Installed via android-platform-tools devDependency (npm install)
+    ADB="$SCRIPT_DIR/node_modules/.bin/adb"
 elif [ -x "./node_modules/.bin/adb" ]; then
     ADB="./node_modules/.bin/adb"
+elif [ -x "$SCRIPT_DIR/platform-tools/adb" ]; then
+    # Manually extracted Google SDK Platform Tools zip into the project root
+    ADB="$SCRIPT_DIR/platform-tools/adb"
+elif [ -x "./platform-tools/adb" ]; then
+    ADB="./platform-tools/adb"
 fi
 
 if [ -z "$ADB" ]; then
-    echo "❌ adb not found. Run 'npm install' to install it via android-platform-tools,"
-    echo "   or install Android SDK Platform Tools manually:"
-    echo "   https://developer.android.com/studio/releases/platform-tools"
+    echo "❌ adb not found. Options to fix:"
+    echo "   1. Run 'npm install' (installs adb automatically via android-platform-tools)"
+    echo "   2. Extract the platform-tools zip into this directory so that"
+    echo "      platform-tools/adb exists alongside this script"
+    echo "   3. Install Android SDK Platform Tools and add to PATH:"
+    echo "      https://developer.android.com/studio/releases/platform-tools"
     exit 1
 fi
 

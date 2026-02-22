@@ -40,6 +40,9 @@ yarn-error.*
 /ios
 /android
 
+# Android SDK Platform Tools (manually extracted zip)
+/platform-tools
+
 # Editor directories and files
 .vscode/
 .idea/
