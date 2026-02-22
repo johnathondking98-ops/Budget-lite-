@@ -5,7 +5,7 @@
     "start": "expo start",
     "android": "expo start --android",
     "android:device": "expo start --android --localhost",
-    "launch:device": "bash launch-device.sh",
+    "launch:device": "node launch-device.js",
     "ios": "expo start --ios",
     "web": "expo start --web"
   },
