@@ -11,29 +11,72 @@ set -e
 
 DEVICE_SERIAL="${1:-}"
 
-# ── 1. Locate adb (system PATH, npm devDep, or manually-extracted platform-tools) ─
+# ── 1. Locate adb ─────────────────────────────────────────────────────────────
+# Checks (in order):
+#   a) system PATH (adb or adb.exe)
+#   b) node_modules/.bin/adb   — JS shim from android-platform-tools devDep
+#   c) node_modules/android-platform-tools/platform-tools/adb[.exe]
+#      — actual binary downloaded by the npm package after npm install
+#   d) ./platform-tools/adb[.exe] — manually extracted Google SDK zip
+
 ADB=""
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+_find_adb() {
+    local candidate="$1"
+    if [ -x "$candidate" ]; then
+        ADB="$candidate"
+        return 0
+    fi
+    # Windows (Git Bash / WSL) — try .exe variant
+    if [ -x "${candidate}.exe" ]; then
+        ADB="${candidate}.exe"
+        return 0
+    fi
+    return 1
+}
+
+echo "🔍 Locating adb..."
+
 if command -v adb &> /dev/null; then
     ADB="adb"
-elif [ -x "$SCRIPT_DIR/node_modules/.bin/adb" ]; then
-    # Installed via android-platform-tools devDependency (npm install)
-    ADB="$SCRIPT_DIR/node_modules/.bin/adb"
-elif [ -x "./node_modules/.bin/adb" ]; then
-    ADB="./node_modules/.bin/adb"
-elif [ -x "$SCRIPT_DIR/platform-tools/adb" ]; then
-    # Manually extracted Google SDK Platform Tools zip into the project root
-    ADB="$SCRIPT_DIR/platform-tools/adb"
-elif [ -x "./platform-tools/adb" ]; then
-    ADB="./platform-tools/adb"
+    echo "   Found: $(command -v adb)"
+elif command -v adb.exe &> /dev/null; then
+    ADB="adb.exe"
+    echo "   Found: $(command -v adb.exe)"
+else
+    # Try npm devDep shim
+    _find_adb "$SCRIPT_DIR/node_modules/.bin/adb" && echo "   Found: $ADB" || true
+    # Try actual binary downloaded by android-platform-tools package
+    if [ -z "$ADB" ]; then
+        _find_adb "$SCRIPT_DIR/node_modules/android-platform-tools/platform-tools/adb" \
+            && echo "   Found: $ADB" || true
+    fi
+    # Try manually extracted platform-tools folder in project root
+    if [ -z "$ADB" ]; then
+        _find_adb "$SCRIPT_DIR/platform-tools/adb" \
+            && echo "   Found: $ADB (manually extracted)" || true
+    fi
+    if [ -z "$ADB" ]; then
+        _find_adb "./platform-tools/adb" \
+            && echo "   Found: $ADB (manually extracted)" || true
+    fi
 fi
 
 if [ -z "$ADB" ]; then
-    echo "❌ adb not found. Options to fix:"
-    echo "   1. Run 'npm install' (installs adb automatically via android-platform-tools)"
-    echo "   2. Extract the platform-tools zip into this directory so that"
-    echo "      platform-tools/adb exists alongside this script"
-    echo "   3. Install Android SDK Platform Tools and add to PATH:"
+    echo ""
+    echo "❌ adb not found. Paths checked:"
+    echo "   • system PATH"
+    echo "   • $SCRIPT_DIR/node_modules/.bin/adb[.exe]"
+    echo "   • $SCRIPT_DIR/node_modules/android-platform-tools/platform-tools/adb[.exe]"
+    echo "   • $SCRIPT_DIR/platform-tools/adb[.exe]"
+    echo ""
+    echo "Options to fix:"
+    echo "   1. Run 'npm install' — downloads adb automatically via android-platform-tools"
+    echo "   2. Extract the platform-tools zip so the folder is at:"
+    echo "      $SCRIPT_DIR/platform-tools/"
+    echo "      (it should contain adb or adb.exe directly inside that folder)"
+    echo "   3. Install Android SDK Platform Tools and add to system PATH:"
     echo "      https://developer.android.com/studio/releases/platform-tools"
     exit 1
 fi

@@ -138,9 +138,19 @@ You can launch the app directly on a physical Android device connected via USB.
 **Option A – automatic (recommended):** `adb` is included when you run `npm install` via the `android-platform-tools` dev dependency. Nothing extra needed.
 
 **Option B – manually downloaded zip:** If you downloaded the Platform Tools zip from Google:
-1. Extract the zip — it creates a `platform-tools/` folder
-2. Copy or move that `platform-tools/` folder into the root of this repository (next to `package.json`)
+1. Extract the zip — it creates a `platform-tools/` folder containing `adb` (or `adb.exe` on Windows)
+2. Move that `platform-tools/` folder into the root of this repository so the structure looks like:
+   ```
+   Budget-lite-/
+   ├── platform-tools/
+   │   ├── adb          ← must be directly here (not nested further)
+   │   └── ...
+   ├── package.json
+   └── launch-device.sh
+   ```
 3. `launch-device.sh` will detect it automatically
+
+> **Tip:** If you still see "adb not found", run `npm run launch:device` — the error output will list every path that was checked so you can confirm the folder is in the right place.
 
 **Option C – system PATH:** Install [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools) and ensure `adb` is in your system PATH.
 
