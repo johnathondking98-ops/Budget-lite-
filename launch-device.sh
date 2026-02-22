@@ -11,9 +11,19 @@ set -e
 
 DEVICE_SERIAL="${1:-}"
 
-# ── 1. Require adb ────────────────────────────────────────────────────────────
-if ! command -v adb &> /dev/null; then
-    echo "❌ adb not found. Install Android SDK Platform Tools:"
+# ── 1. Locate adb (system PATH or npm-installed android-platform-tools) ───────
+ADB=""
+if command -v adb &> /dev/null; then
+    ADB="adb"
+elif [ -x "$(dirname "$0")/node_modules/.bin/adb" ]; then
+    ADB="$(dirname "$0")/node_modules/.bin/adb"
+elif [ -x "./node_modules/.bin/adb" ]; then
+    ADB="./node_modules/.bin/adb"
+fi
+
+if [ -z "$ADB" ]; then
+    echo "❌ adb not found. Run 'npm install' to install it via android-platform-tools,"
+    echo "   or install Android SDK Platform Tools manually:"
     echo "   https://developer.android.com/studio/releases/platform-tools"
     exit 1
 fi
@@ -25,12 +35,12 @@ if [ -n "$DEVICE_SERIAL" ]; then
 fi
 
 # ── 2. Confirm a device is connected and ready ────────────────────────────────
-DEVICE_LINE=$(adb "${ADB_ARGS[@]}" devices 2>/dev/null | grep -v "^List" | grep "device$" | head -1)
+DEVICE_LINE=$("$ADB" "${ADB_ARGS[@]}" devices 2>/dev/null | grep -v "^List" | grep "device$" | head -1)
 if [ -z "$DEVICE_LINE" ]; then
     echo "❌ No Android device found."
     echo "   • Make sure USB Debugging is enabled on the device."
     echo "   • Accept the 'Allow USB debugging?' prompt on the device screen."
-    echo "   • Try: adb devices"
+    echo "   • Try: $ADB devices"
     exit 1
 fi
 
@@ -39,7 +49,7 @@ echo "✅ Device found: $SERIAL"
 
 # ── 3. Forward Metro port over USB ───────────────────────────────────────────
 echo "🔌 Setting up port forwarding (adb reverse tcp:8081 tcp:8081)..."
-adb -s "$SERIAL" reverse tcp:8081 tcp:8081
+"$ADB" -s "$SERIAL" reverse tcp:8081 tcp:8081
 echo "   Port 8081 forwarded."
 
 # ── 4. Launch Expo on the device ─────────────────────────────────────────────

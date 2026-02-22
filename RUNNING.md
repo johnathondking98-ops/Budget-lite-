@@ -133,7 +133,7 @@ You can launch the app directly on a physical Android device connected via USB.
 
 ### Prerequisites
 
-- [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools) installed (provides `adb`)
+- **`adb`** is included automatically when you run `npm install` (via the `android-platform-tools` dev dependency). No manual SDK download needed.
 - USB Debugging enabled on your Android device:
   1. Open **Settings → About phone**
   2. Tap **Build number** 7 times to unlock Developer Options
@@ -161,11 +161,11 @@ This script (`launch-device.sh`) will automatically:
 
 ### Manual Steps (alternative)
 
-If you prefer to run each step yourself:
+If you prefer to run each step yourself (`adb` is available in `node_modules/.bin/` after `npm install`):
 
 1. Verify ADB detects your device:
    ```bash
-   adb devices
+   npx adb devices
    # Should list your device, e.g.:
    # List of devices attached
    # ABC123DEF456   device
@@ -173,7 +173,7 @@ If you prefer to run each step yourself:
 
 2. Forward Metro bundler port to the device:
    ```bash
-   adb reverse tcp:8081 tcp:8081
+   npx adb reverse tcp:8081 tcp:8081
    ```
 
 3. Start Expo bound to localhost:

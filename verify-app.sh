@@ -87,14 +87,16 @@ else
     echo "  ⚠️  node_modules not found. Run 'npm install' to install dependencies."
 fi
 
-# Check adb (optional - needed for USB debugging)
+# Check adb (optional - needed for USB debugging; installed via android-platform-tools)
 echo "✓ Checking ADB (optional - for USB debugging)..."
 if command -v adb &> /dev/null; then
     ADB_VERSION=$(adb version | head -1)
     echo "  ✓ $ADB_VERSION"
+elif [ -x "./node_modules/.bin/adb" ]; then
+    ADB_VERSION=$(./node_modules/.bin/adb version | head -1)
+    echo "  ✓ $ADB_VERSION (via node_modules)"
 else
-    echo "  ℹ️  adb not found. Install Android SDK Platform Tools for USB device debugging."
-    echo "     Download: https://developer.android.com/studio/releases/platform-tools"
+    echo "  ℹ️  adb not found. Run 'npm install' to install it via android-platform-tools."
 fi
 
 echo ""
