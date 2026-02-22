@@ -127,12 +127,89 @@ Based on the application structure, Budget Lite includes:
 8. **Offline Storage** - Uses AsyncStorage for local data persistence
 9. **Firebase Integration** - Optional cloud synchronization
 
+## 📱 USB Debugging on a Secondary Android Device
+
+You can launch the app directly on a physical Android device connected via USB.
+
+### Prerequisites
+
+`adb` (Android SDK Platform Tools) is required. Choose one of these options:
+
+**Option A – automatic (recommended):** `adb` is included when you run `npm install` via the `android-platform-tools` dev dependency. Nothing extra needed.
+
+**Option B – manually downloaded zip:** If you downloaded the Platform Tools zip from Google:
+1. Extract the zip — it creates a `platform-tools/` folder containing `adb` (or `adb.exe` on Windows)
+2. Move that `platform-tools/` folder into the root of this repository so the structure looks like:
+   ```
+   Budget-lite-/
+   ├── platform-tools/
+   │   ├── adb          ← must be directly here (not nested further)
+   │   └── ...
+   ├── package.json
+   └── launch-device.sh
+   ```
+3. `launch-device.sh` will detect it automatically
+
+> **Tip:** If you still see "adb not found", run `npm run launch:device` — the error output will list every path that was checked so you can confirm the folder is in the right place.
+
+**Option C – system PATH:** Install [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools) and ensure `adb` is in your system PATH.
+
+You also need:
+- USB Debugging enabled on your Android device:
+  1. Open **Settings → About phone**
+  2. Tap **Build number** 7 times to unlock Developer Options
+  3. Open **Settings → Developer options** → enable **USB debugging**
+- Connect the device to your computer with a USB cable and accept the "Allow USB debugging?" prompt
+
+### One-Command Launch
+
+Once the device is connected and USB debugging is enabled, a single command handles everything:
+
+```bash
+npm run launch:device
+```
+
+This script (`launch-device.sh`) will automatically:
+1. Confirm a device is detected by ADB
+2. Forward Metro bundler port 8081 over USB (`adb reverse tcp:8081 tcp:8081`)
+3. Start Expo bound to localhost and open the app on the device
+
+> **Tip:** To target a specific device when multiple are connected:
+> ```bash
+> bash launch-device.sh <device-serial>
+> ```
+> You can find the device serial with `adb devices`.
+
+### Manual Steps (alternative)
+
+If you prefer to run each step yourself (`adb` is available in `node_modules/.bin/` after `npm install`):
+
+1. Verify ADB detects your device:
+   ```bash
+   npx adb devices
+   # Should list your device, e.g.:
+   # List of devices attached
+   # ABC123DEF456   device
+   ```
+
+2. Forward Metro bundler port to the device:
+   ```bash
+   npx adb reverse tcp:8081 tcp:8081
+   ```
+
+3. Start Expo bound to localhost:
+   ```bash
+   npm run android:device
+   ```
+
 ## 🔧 Available Scripts
 
 | Command | Description |
 |---------|-------------|
 | `npm start` | Start Expo development server |
 | `npm run android` | Run on Android device/emulator |
+| `npm run android:device` | Run on a USB-connected Android device (USB debugging) |
+| `npm run launch:device` | **One command**: detect device, forward port, and launch |
 | `npm run ios` | Run on iOS device/simulator |
 | `npm run web` | Run in web browser |
 
