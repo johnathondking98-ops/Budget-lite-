@@ -24,15 +24,23 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 _find_adb() {
     local candidate="$1"
-    if [ -x "$candidate" ]; then
-        ADB="$candidate"
-        return 0
-    fi
-    # Windows (Git Bash / WSL) — try .exe variant
-    if [ -x "${candidate}.exe" ]; then
-        ADB="${candidate}.exe"
-        return 0
-    fi
+    # Check executable first, then fall back to file-exists + auto-chmod
+    # (zip extraction on macOS/Linux often strips the execute bit)
+    for path in "$candidate" "${candidate}.exe"; do
+        if [ -x "$path" ]; then
+            ADB="$path"
+            return 0
+        elif [ -f "$path" ]; then
+            # File exists but is not executable — fix the permission and use it
+            # (zip extraction on macOS/Linux often strips the execute bit)
+            echo "   Note: $path exists but is not executable. Running chmod +x..."
+            chmod +x "$path" 2>/dev/null || true
+            if [ -x "$path" ]; then
+                ADB="$path"
+                return 0
+            fi
+        fi
+    done
     return 1
 }
 
@@ -75,7 +83,9 @@ if [ -z "$ADB" ]; then
     echo "   1. Run 'npm install' — downloads adb automatically via android-platform-tools"
     echo "   2. Extract the platform-tools zip so the folder is at:"
     echo "      $SCRIPT_DIR/platform-tools/"
-    echo "      (it should contain adb or adb.exe directly inside that folder)"
+    echo "      (adb or adb.exe must be directly inside that folder)"
+    echo "      If adb is there but not executable, run:"
+    echo "      chmod +x $SCRIPT_DIR/platform-tools/adb"
     echo "   3. Install Android SDK Platform Tools and add to system PATH:"
     echo "      https://developer.android.com/studio/releases/platform-tools"
     exit 1
