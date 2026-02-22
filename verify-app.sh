@@ -87,14 +87,28 @@ else
     echo "  ⚠️  node_modules not found. Run 'npm install' to install dependencies."
 fi
 
+# Check adb (optional - needed for USB debugging)
+echo "✓ Checking ADB (optional - for USB debugging)..."
+if command -v adb &> /dev/null; then
+    ADB_VERSION=$(adb version | head -1)
+    echo "  ✓ $ADB_VERSION"
+else
+    echo "  ℹ️  adb not found. Install Android SDK Platform Tools for USB device debugging."
+    echo "     Download: https://developer.android.com/studio/releases/platform-tools"
+fi
+
 echo ""
 echo "========================================="
-echo "✅ Application verification complete!"
 echo ""
 echo "To run the application:"
 echo "  1. Install dependencies (if not done): npm install"
 echo "  2. Start development server: npm start"
 echo "  3. Scan QR code with Expo Go app"
+echo ""
+echo "To run on a USB-connected Android device:"
+echo "  1. Enable USB Debugging on your device (Settings → Developer options)"
+echo "  2. Connect device via USB and run: adb reverse tcp:8081 tcp:8081"
+echo "  3. Run: npm run android:device"
 echo ""
 echo "For detailed instructions, see RUNNING.md"
 echo "========================================="

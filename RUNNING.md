@@ -127,12 +127,53 @@ Based on the application structure, Budget Lite includes:
 8. **Offline Storage** - Uses AsyncStorage for local data persistence
 9. **Firebase Integration** - Optional cloud synchronization
 
+## 📱 USB Debugging on a Secondary Android Device
+
+You can launch the app directly on a physical Android device connected via USB.
+
+### Prerequisites
+
+- [Android SDK Platform Tools](https://developer.android.com/studio/releases/platform-tools) installed (provides `adb`)
+- USB Debugging enabled on your Android device:
+  1. Open **Settings → About phone**
+  2. Tap **Build number** 7 times to unlock Developer Options
+  3. Open **Settings → Developer options** → enable **USB debugging**
+- Connect the device to your computer with a USB cable and accept the "Allow USB debugging?" prompt
+
+### Steps
+
+1. Verify ADB detects your device:
+   ```bash
+   adb devices
+   # Should list your device, e.g.:
+   # List of devices attached
+   # ABC123DEF456   device
+   ```
+
+2. Forward Metro bundler port to the device:
+   ```bash
+   adb reverse tcp:8081 tcp:8081
+   ```
+
+3. Start Expo bound to localhost (so it works through the USB tunnel):
+   ```bash
+   npm run android:device
+   ```
+
+4. The app will install and launch automatically on the connected device via Expo Go.
+
+> **Tip:** If you have multiple devices connected, specify the target device:
+> ```bash
+> adb -s <device-serial> reverse tcp:8081 tcp:8081
+> ```
+
 ## 🔧 Available Scripts
 
 | Command | Description |
 |---------|-------------|
 | `npm start` | Start Expo development server |
 | `npm run android` | Run on Android device/emulator |
+| `npm run android:device` | Run on a USB-connected Android device (USB debugging) |
 | `npm run ios` | Run on iOS device/simulator |
 | `npm run web` | Run in web browser |
 
